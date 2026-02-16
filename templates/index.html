@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-<div class="container">
+<div class="container"><center>
     <h1>PS4 Remote Package Installer</h1>
 
     <div class="input-group">
@@ -25,7 +25,7 @@
         </select>
         <button class="action-btn" onclick="addToQueue()">Add to Queue</button>
     </div>
-
+	Note: The Queue system allows 1 file per install request for now, i am working on fixing that issue.
     <h2>Queue</h2>
     <table id="queue-table">
         <thead>
@@ -37,7 +37,7 @@
     <div class="button-row">
         <button class="action-btn" onclick="installQueue()">Install Queue</button>
         <button class="action-btn" onclick="clearQueue()">Clear Queue</button>
-    </div>
+    </div></center>
 </div>
 
 <script src="/static/script.js"></script>
