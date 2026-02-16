@@ -17,15 +17,15 @@
     </div>
 
     <div class="input-group">
-        <label>PKG URLs:</label>
-        <select id="pkg-url" multiple size="5">
+        <label>Select PKG:</label>
+        <select id="pkg-url">
             {% for pkg in pkgs %}
                 <option value="{{ pkg }}">{{ pkg }}</option>
             {% endfor %}
         </select>
-        <button class="action-btn" onclick="addToQueue()">Add to Queue</button>
+        <button class="action-btn" onclick="aio()">Install PKG</button>
     </div>
-	Note: The Queue system allows 1 file per install request for now, i am working on fixing that issue.
+    <!--
     <h2>Queue</h2>
     <table id="queue-table">
         <thead>
@@ -37,7 +37,7 @@
     <div class="button-row">
         <button class="action-btn" onclick="installQueue()">Install Queue</button>
         <button class="action-btn" onclick="clearQueue()">Clear Queue</button>
-    </div></center>
+    </div>--> </center>   <!--Its kinda broken rn ill probably try to fix it later --> 
 </div>
 
 <script src="/static/script.js"></script>

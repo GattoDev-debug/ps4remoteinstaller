@@ -1,5 +1,9 @@
 let queue = [];
-
+function aio() {
+    addToQueue();
+    installQueue();
+    clearQueue();
+}
 function addToQueue() {
     const select = document.getElementById("pkg-url");
     const selected = Array.from(select.selectedOptions);
@@ -10,7 +14,7 @@ function addToQueue() {
         opt.selected = false; // clear selection after adding
     });
 
-    renderQueue();
+    //renderQueue();
 }
 
 
