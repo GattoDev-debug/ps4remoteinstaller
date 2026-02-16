@@ -29,21 +29,23 @@ jobs:
           pip install pyinstaller
 
       - name: Build Executable
+        shell: bash
         run: |
           STATIC_PATH="static"
           TEMPLATES_PATH="templates"
-
+      
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             pyinstaller --onefile --name "PS4 Remote Installer" --windowed \
               --add-data "${STATIC_PATH};static" \
               --add-data "${TEMPLATES_PATH};templates" \
-              main.py
+              src/main.py
           else
             pyinstaller --onefile --name "PS4 Remote Installer" --windowed \
               --add-data "${STATIC_PATH}:static" \
               --add-data "${TEMPLATES_PATH}:templates" \
-              main.py
+              src/main.py
           fi
+
 
       - name: Upload Executable to GitHub Release
         uses: svenstaro/upload-release-action@v2
