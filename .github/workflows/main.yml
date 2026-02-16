@@ -37,12 +37,12 @@ jobs:
             pyinstaller --onefile --name "PS4 Remote Installer" --windowed \
               --add-data "${STATIC_PATH};static" \
               --add-data "${TEMPLATES_PATH};templates" \
-              src/main.py
+              main.py
           else
             pyinstaller --onefile --name "PS4 Remote Installer" --windowed \
               --add-data "${STATIC_PATH}:static" \
               --add-data "${TEMPLATES_PATH}:templates" \
-              src/main.py
+              main.py
           fi
 
       - name: Upload Executable to GitHub Release
