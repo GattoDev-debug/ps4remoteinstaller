@@ -1,27 +1,26 @@
-name: Build Executable
+name: Build and Publish
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - '*'  # trigger on any tag push
 
 jobs:
   build:
+    name: Build and Publish Binaries
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-        python-version: [3.14.1]
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.14.1
 
       - name: Install dependencies
         run: |
@@ -38,23 +37,20 @@ jobs:
             pyinstaller --onefile --name "PS4 Remote Installer" --windowed \
               --add-data "${STATIC_PATH};static" \
               --add-data "${TEMPLATES_PATH};templates" \
-              main.py
+              src/main.py
           else
             pyinstaller --onefile --name "PS4 Remote Installer" --windowed \
               --add-data "${STATIC_PATH}:static" \
               --add-data "${TEMPLATES_PATH}:templates" \
-              main.py
+              src/main.py
           fi
 
-      - name: Upload Executable
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            ARTIFACT_PATH="dist/PS4 Remote Installer.exe"
-          else
-            ARTIFACT_PATH="dist/PS4 Remote Installer"
-          fi
-        shell: bash
-      - uses: actions/upload-artifact@v4
+      - name: Upload Executable to GitHub Release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: PS4-Remote-Installer-${{ matrix.os }}
-          path: ${{ steps.Build_Executable.outputs.ARTIFACT_PATH }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ matrix.os == 'windows-latest' && 'dist/PS4 Remote Installer.exe' || 'dist/PS4 Remote Installer' }}
+          asset_name: ${{ matrix.os == 'windows-latest' && 'PS4 Remote Installer.exe' || 'PS4 Remote Installer' }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "PS4 Remote Installer for ${{ matrix.os }}"
