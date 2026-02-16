@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-        python-version: [3.14.3]
+        python-version: [3.14.1]
 
     steps:
       - name: Checkout repository
@@ -44,11 +44,17 @@ jobs:
               --add-data "${STATIC_PATH}:static" \
               --add-data "${TEMPLATES_PATH}:templates" \
               src/main.py
+          fi
 
       - name: Upload Executable
-        uses: actions/upload-artifact@v4
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            ARTIFACT_PATH="dist/PS4 Remote Installer.exe"
+          else
+            ARTIFACT_PATH="dist/PS4 Remote Installer"
+          fi
+        shell: bash
+      - uses: actions/upload-artifact@v4
         with:
           name: PS4-Remote-Installer-${{ matrix.os }}
-          path: |
-            dist/PS4\ Remote\ Installer.exe
-            dist/PS4\ Remote\ Installer
+          path: ${{ steps.Build_Executable.outputs.ARTIFACT_PATH }}
