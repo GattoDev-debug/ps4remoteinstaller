@@ -119,27 +119,32 @@ def install_queue():
         return jsonify({"error": "No PKGs selected"}), 400
 
     host_ip = get_lan_ip()
-
     pkg_urls = [
         f"http://{host_ip}:{FLASK_PORT}/pkgs/{pkg}"
         for pkg in selected_pkgs
     ]
 
-    log(f"Sending install request to {ip}")
+    log(f"Preparing to send install request to {ip}")
     log(f"Packages: {pkg_urls}")
 
-    log("Waiting 10 seconds for RPI to open...")
-    time.sleep(10)
-
     api = PS4RPI(ip)
-    status, resp = api.install_pkg_direct(pkg_urls)
 
-    log(f"PS4 Response Status: {status}")
-    log(f"PS4 Response Body: {resp}")
+    # Initial 2-second wait
+    time.sleep(2)
 
-    return jsonify({"status_code": status, "response": resp})
+    while True:
+        try:
+            status, resp = api.install_pkg_direct(pkg_urls)
+            # If we get a valid response, break out of the loop
+            if status is not None and resp is not None:
+                log(f"PS4 Response Status: {status}")
+                log(f"PS4 Response Body: {resp}")
+                return jsonify({"status_code": status, "response": resp})
+        except Exception as e:
+            log(f"Error while sending request: {e}")
 
-
+        # Wait 1 second before retrying
+        time.sleep(1)
 # ---------------------------
 # Tkinter UI
 # ---------------------------
@@ -190,7 +195,7 @@ def start_tk_ui():
         fg="white",
         width=15
     ).pack(pady=0)
-
+    root.protocol("WM_DELETE_WINDOW", close_app) # was this literally all i had to do to make the X button work? lmao
     root.mainloop()
 
 
@@ -198,7 +203,7 @@ def start_tk_ui():
 # Start Flask in Thread
 # ---------------------------
 def start_flask():
-    app.run(host="0.0.0.0", port=FLASK_PORT, debug=False, use_reloader=False)
+    app.run(host="0.0.0.0", port=FLASK_PORT, debug=True, use_reloader=False)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 let queue = [];
-function aio() {
+function aio() { // this function sucks so bad, but it works and i dont care enough to rewrite it
     addToQueue();
     installQueue();
     clearQueue();
@@ -16,6 +16,30 @@ function addToQueue() {
 
     //renderQueue();
 }
+// just to make sure you dont do this on a non play the station device, since it wont work and i dont want to answer "why isnt it working" questions 100 times a day
+document.addEventListener("DOMContentLoaded", () => {
+    const ua = navigator.userAgent;
+
+    const isPS4 = /PlayStation 4\/.*/i.test(ua);
+
+    if (!isPS4) {
+        const buttons = document.querySelectorAll(".action-btn");
+
+        buttons.forEach(button => {
+            button.disabled = true;
+            button.textContent = "You're not on a PlayStation!";
+            button.style.opacity = "0.6";
+            button.style.cursor = "not-allowed";
+
+            button.onclick = (e) => e.preventDefault();
+        });
+    }
+    if (!isPS4) {
+        window.aio = function () {
+            alert("Sneaky. won't work though.");
+        };
+    }
+});
 
 
 function renderQueue() {
@@ -41,7 +65,7 @@ async function installQueue() {
     
         // Show alert about opening RPI
         
-    alert("You have 10 seconds to open RPI.\nPress 'Close [Internet Browser]' and open Remote Package Installer.");
+    alert("Process OK, Added to Download Request.\nPlease Open Remote Package Installer on your PS4 and wait for the download to finish.\n");
     const res = await fetch("/install_queue", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
