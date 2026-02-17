@@ -55,4 +55,3 @@ jobs:
           asset_name: ${{ matrix.os == 'windows-latest' && 'PS4 Remote Installer.exe' || 'PS4 Remote Installer' }}
           tag: ${{ github.ref }}
           overwrite: true
-          body: "PS4 Remote Installer for ${{ matrix.os }}"
